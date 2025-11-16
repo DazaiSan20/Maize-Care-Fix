@@ -4,7 +4,7 @@ import '../../../core/constants/text_styles.dart';
 import '../../widgets/info_card.dart';
 
 class NotifikasiScreen extends StatefulWidget {
-  const NotifikasiScreen({Key? key}) : super(key: key);
+  const NotifikasiScreen({super.key});
 
   @override
   State<NotifikasiScreen> createState() => _NotifikasiScreenState();

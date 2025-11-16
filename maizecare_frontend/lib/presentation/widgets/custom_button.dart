@@ -9,22 +9,24 @@ class CustomButton extends StatelessWidget {
   final Color? textColor;
   final bool isOutlined;
   final IconData? icon;
+  final Widget? iconWidget;
   final bool isLoading;
   final double? width;
   final double height;
 
   const CustomButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.backgroundColor,
     this.textColor,
     this.isOutlined = false,
     this.icon,
+    this.iconWidget,
     this.isLoading = false,
     this.width,
     this.height = 50,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class CustomButton extends StatelessWidget {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : Icon(icon ?? Icons.login, color: AppColors.textPrimary),
+              : (iconWidget ?? Icon(icon ?? Icons.login, color: AppColors.textPrimary)),
           label: Text(
             text,
             style: AppTextStyles.button.copyWith(

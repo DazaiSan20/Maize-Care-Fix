@@ -5,7 +5,7 @@ import '../../widgets/custom_textfield.dart';
 import '../../widgets/custom_button.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-  const ForgotPasswordScreen({Key? key}) : super(key: key);
+  const ForgotPasswordScreen({super.key});
 
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
@@ -42,7 +42,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: const Text('Lupa Password'),
+        title: const Text(''),
         backgroundColor: AppColors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
@@ -55,10 +55,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             Text(
               'Lupa Password?',
               style: AppTextStyles.heading2,
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
               'Masukkan email untuk reset password anda',
+              textAlign: TextAlign.center,
               style: AppTextStyles.body.copyWith(
                 color: AppColors.textSecondary,
               ),

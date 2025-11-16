@@ -6,7 +6,7 @@ import 'notification/notifikasi_screen.dart';
 import 'profile/profil_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+  const MainScreen({super.key});
 
   @override
   State<MainScreen> createState() => _MainScreenState();

@@ -5,7 +5,7 @@ import '../../widgets/custom_textfield.dart';
 import '../../widgets/custom_button.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -54,7 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: const Text('Daftar Akun'),
+        title: const Text(''),
         backgroundColor: AppColors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,

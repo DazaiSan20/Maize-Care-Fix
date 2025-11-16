@@ -6,7 +6,7 @@ import '../../widgets/custom_button.dart';
 import '../auth/login_screen.dart';
 
 class ProfilScreen extends StatefulWidget {
-  const ProfilScreen({Key? key}) : super(key: key);
+  const ProfilScreen({super.key});
 
   @override
   State<ProfilScreen> createState() => _ProfilScreenState();
@@ -306,47 +306,6 @@ class _ProfilScreenState extends State<ProfilScreen> {
       ),
       child: Column(
         children: [
-          _buildMenuItem(
-            icon: Icons.lock_outline,
-            title: 'Ubah Password',
-            onTap: () {
-              // Navigate to change password
-            },
-          ),
-          const Divider(height: 1),
-          _buildMenuItem(
-            icon: Icons.notifications_outlined,
-            title: 'Pengaturan Notifikasi',
-            onTap: () {
-              // Navigate to notification settings
-            },
-          ),
-          const Divider(height: 1),
-          _buildMenuItem(
-            icon: Icons.language_outlined,
-            title: 'Bahasa',
-            subtitle: 'Indonesia',
-            onTap: () {
-              // Navigate to language settings
-            },
-          ),
-          const Divider(height: 1),
-          _buildMenuItem(
-            icon: Icons.help_outline,
-            title: 'Bantuan & Dukungan',
-            onTap: () {
-              // Navigate to help
-            },
-          ),
-          const Divider(height: 1),
-          _buildMenuItem(
-            icon: Icons.info_outline,
-            title: 'Tentang Aplikasi',
-            subtitle: 'Versi 1.0.0',
-            onTap: () {
-              // Navigate to about
-            },
-          ),
           const Divider(height: 1),
           _buildMenuItem(
             icon: Icons.logout,

@@ -5,7 +5,7 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/info_card.dart';
 
 class MonitoringDaunScreen extends StatefulWidget {
-  const MonitoringDaunScreen({Key? key}) : super(key: key);
+  const MonitoringDaunScreen({super.key});
 
   @override
   State<MonitoringDaunScreen> createState() => _MonitoringDaunScreenState();

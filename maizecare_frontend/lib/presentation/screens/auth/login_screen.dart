@@ -8,7 +8,7 @@ import 'register_screen.dart';
 import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -51,10 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -149,7 +145,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 text: 'Login dengan Google',
                 onPressed: () {},
                 isOutlined: true,
-                icon: Icons.login,
+                iconWidget: Image.network(
+                  'https://developers.google.com/identity/images/g-logo.png',
+                  width: 20,
+                  height: 20,
+                ),
               ),
               const SizedBox(height: 24),
               

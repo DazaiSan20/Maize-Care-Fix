@@ -15,7 +15,7 @@ class CustomTextField extends StatelessWidget {
   final Widget? prefixIcon;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.label,
     this.controller,
     this.obscureText = false,
@@ -26,7 +26,7 @@ class CustomTextField extends StatelessWidget {
     this.validator,
     this.maxLines = 1,
     this.prefixIcon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

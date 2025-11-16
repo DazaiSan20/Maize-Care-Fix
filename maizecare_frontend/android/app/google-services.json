@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "834405893568",
+    "project_id": "maize-care-fix",
+    "storage_bucket": "maize-care-fix.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:834405893568:android:47b01056aa2d83187eb425",
+        "android_client_info": {
+          "package_name": "com.example.maizecare_frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVo0pY6XyzwmIm2YJU8uYZ7fRp_r5OWbM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

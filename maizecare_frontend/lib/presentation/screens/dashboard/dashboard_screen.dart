@@ -4,7 +4,7 @@ import '../../../core/constants/text_styles.dart';
 import '../../widgets/custom_button.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -388,7 +388,7 @@ class DashboardScreen extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'NOTE: 8 daun sehat, 1 sakit. (Hubungan penyakit padi: -)',
+                    'NOTE: 8 daun sehat, 1 sakit. (Hubungan penyakit jagung: -)',
                     style: AppTextStyles.bodySmall.copyWith(
                       color: AppColors.textPrimary,
                     ),

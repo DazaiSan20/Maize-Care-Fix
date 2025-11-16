@@ -4,7 +4,7 @@ import '../../../core/constants/text_styles.dart';
 import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -33,18 +33,27 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo placeholder
-            Container(
+            // App logo (use local asset `assets/images/logo.png`)
+            SizedBox(
               width: 120,
               height: 120,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-              ),
-              child: const Icon(
-                Icons.agriculture,
-                size: 60,
-                color: Colors.white,
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    // Fallback to an icon if the asset is missing
+                    return Container(
+                      color: AppColors.primary,
+                      child: const Icon(
+                        Icons.agriculture,
+                        size: 60,
+                        color: Colors.white,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 24),

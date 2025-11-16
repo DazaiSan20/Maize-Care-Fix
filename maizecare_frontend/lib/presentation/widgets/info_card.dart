@@ -10,13 +10,13 @@ class InfoCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const InfoCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.content,
     required this.backgroundColor,
     this.icon,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
