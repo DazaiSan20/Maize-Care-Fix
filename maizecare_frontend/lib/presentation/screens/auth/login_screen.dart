@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/custom_button.dart';
+import '../../../providers/auth_provider.dart';
 import '../main_screen.dart';
 import 'register_screen.dart';
 import 'forgot_password_screen.dart';
@@ -19,7 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -28,19 +29,39 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _handleLogin() {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
+  void _handleLogin() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final authProvider = context.read<AuthProvider>();
+    
+    final response = await authProvider.login(
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
+
+    if (!mounted) return;
+
+    if (response.success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Login berhasil!'),
+          backgroundColor: AppColors.success,
+          duration: Duration(seconds: 1),
+        ),
+      );
       
-      // Simulate API call
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const MainScreen()),
-          );
-        }
-      });
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(response.message),
+          backgroundColor: AppColors.error,
+          duration: const Duration(seconds: 3),
+        ),
+      );
     }
   }
 
@@ -132,12 +153,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
 
-              CustomButton(
-                text: 'LOGIN',
-                onPressed: _handleLogin,
-                isLoading: _isLoading,
+              Consumer<AuthProvider>(
+                builder: (context, authProvider, _) {
+                  return CustomButton(
+                    text: 'Login',
+                    onPressed: _handleLogin,
+                    isLoading: authProvider.isLoading,
+                  );
+                },
               ),
               const SizedBox(height: 16),
 

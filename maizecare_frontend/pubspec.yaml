@@ -3,7 +3,7 @@ description: Aplikasi monitoring kesehatan tanaman jagung
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.17.0 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -11,33 +11,33 @@ dependencies:
   
   cupertino_icons: ^1.0.2
   
-  # Firebase
-  firebase_core: ^2.24.2
-  firebase_auth: ^4.15.3
-  google_sign_in: ^6.2.1
+  # Firebase - VERSI KOMPATIBEL DENGAN DART 3.7.2
+  firebase_core: ^3.15.2
+  firebase_auth: ^5.7.0
+  google_sign_in: ^6.3.0
   
   # State Management
   provider: ^6.1.1
   
   # Network & API
-  http: ^1.1.0
+  http: ^1.2.2
   
   # Local Storage
-  shared_preferences: ^2.2.2
+  shared_preferences: ^2.3.3
   
   # Image
-  image_picker: ^1.0.7
+  image_picker: ^1.1.2
   
   # Charts
-  fl_chart: ^0.66.0
+  fl_chart: ^0.70.2
   
   # Utils
-  intl: ^0.18.1
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.1
+  flutter_lints: ^5.0.0  # TURUNKAN KE 5.0.0
 
 flutter:
   uses-material-design: true
