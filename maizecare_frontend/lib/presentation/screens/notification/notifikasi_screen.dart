@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
+import '../../../providers/notification_provider.dart';
+import '../../../data/models/notification_model.dart';
 
 class NotifikasiScreen extends StatefulWidget {
   const NotifikasiScreen({super.key});
@@ -11,56 +14,25 @@ class NotifikasiScreen extends StatefulWidget {
 
 class _NotifikasiScreenState extends State<NotifikasiScreen> {
   String _selectedFilter = 'Semua';
-  
-  final List<NotificationItem> _notifications = [
-    NotificationItem(
-      title: 'Kelembaban Terlalu Tinggi',
-      content:
-          'Kelembaban tanah mencapai 85%. Segera lakukan tindakan untuk mengurangi kelembaban.\n\nTanggal: 08 Nov 2025, 14:30\nSuhu: 28°C, Kelembaban tanah: 85%',
-      type: NotificationType.warning,
-      time: '2 jam yang lalu',
-      isRead: false,
-    ),
-    NotificationItem(
-      title: 'Rekomendasi Remedies',
-      content:
-          'Tanaman kurang sehat. Disarankan untuk melakukan pemupukan dan penyiraman yang lebih teratur.',
-      type: NotificationType.info,
-      time: '5 jam yang lalu',
-      isRead: false,
-    ),
-    NotificationItem(
-      title: 'Penyakit Terdeteksi!',
-      content:
-          'Penyakit daun jagung terdeteksi pada pemeriksaan terakhir.\n\nTanggal: 08 Nov 2025, 10:15\nPenyakit: Common Rust\nTingkat: Sedang',
-      type: NotificationType.danger,
-      time: '1 hari yang lalu',
-      isRead: true,
-    ),
-    NotificationItem(
-      title: 'Penanaman Ulang!',
-      content:
-          'Tanaman terlewatkan untuk ditanam pada masa tanam yang seharusnya. Segera lakukan penanaman ulang.',
-      type: NotificationType.info,
-      time: '2 hari yang lalu',
-      isRead: true,
-    ),
-    NotificationItem(
-      title: 'Pemeriksaan Berhasil',
-      content:
-          'Pemeriksaan daun jagung telah selesai. Semua tanaman dalam kondisi sehat.',
-      type: NotificationType.success,
-      time: '3 hari yang lalu',
-      isRead: true,
-    ),
-  ];
 
-  List<NotificationItem> get _filteredNotifications {
-    if (_selectedFilter == 'Semua') return _notifications;
+  @override
+  void initState() {
+    super.initState();
+    // Load notifications saat screen dibuka
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadNotifications();
+    });
+  }
+
+  Future<void> _loadNotifications() async {
+    String? filter;
     if (_selectedFilter == 'Belum Dibaca') {
-      return _notifications.where((n) => !n.isRead).toList();
+      filter = 'unread';
+    } else if (_selectedFilter == 'Sudah Dibaca') {
+      filter = 'read';
     }
-    return _notifications.where((n) => n.isRead).toList();
+
+    await context.read<NotificationProvider>().fetchNotifications(filter: filter);
   }
 
   @override
@@ -89,24 +61,38 @@ class _NotifikasiScreenState extends State<NotifikasiScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          _buildFilterChips(),
-          Expanded(
-            child: _filteredNotifications.isEmpty
-                ? _buildEmptyState()
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _filteredNotifications.length,
-                    itemBuilder: (context, index) {
-                      return _buildNotificationCard(
-                        _filteredNotifications[index],
-                        index,
-                      );
-                    },
-                  ),
-          ),
-        ],
+      body: Consumer<NotificationProvider>(
+        builder: (context, provider, child) {
+          if (provider.isLoading && provider.notifications.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (provider.error != null) {
+            return _buildErrorState(provider.error!);
+          }
+
+          return Column(
+            children: [
+              _buildFilterChips(),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _loadNotifications,
+                  child: provider.notifications.isEmpty
+                      ? _buildEmptyState()
+                      : ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: provider.notifications.length,
+                          itemBuilder: (context, index) {
+                            return _buildNotificationCard(
+                              provider.notifications[index],
+                            );
+                          },
+                        ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -134,6 +120,7 @@ class _NotifikasiScreenState extends State<NotifikasiScreen> {
       selected: isSelected,
       onSelected: (selected) {
         setState(() => _selectedFilter = label);
+        _loadNotifications();
       },
       backgroundColor: AppColors.white,
       selectedColor: AppColors.primary.withOpacity(0.2),
@@ -147,28 +134,28 @@ class _NotifikasiScreenState extends State<NotifikasiScreen> {
     );
   }
 
-  Widget _buildNotificationCard(NotificationItem notification, int index) {
+  Widget _buildNotificationCard(NotificationModel notification) {
     Color backgroundColor;
     Color borderColor;
     IconData icon;
 
     switch (notification.type) {
-      case NotificationType.success:
+      case 'success':
         backgroundColor = AppColors.success.withOpacity(0.1);
         borderColor = AppColors.success.withOpacity(0.3);
         icon = Icons.check_circle_outline;
         break;
-      case NotificationType.warning:
+      case 'warning':
         backgroundColor = AppColors.warning.withOpacity(0.1);
         borderColor = AppColors.warning.withOpacity(0.3);
         icon = Icons.warning_amber_outlined;
         break;
-      case NotificationType.danger:
+      case 'danger':
         backgroundColor = AppColors.error.withOpacity(0.1);
         borderColor = AppColors.error.withOpacity(0.3);
         icon = Icons.error_outline;
         break;
-      case NotificationType.info:
+      case 'info':
       default:
         backgroundColor = AppColors.info.withOpacity(0.1);
         borderColor = AppColors.info.withOpacity(0.3);
@@ -176,7 +163,7 @@ class _NotifikasiScreenState extends State<NotifikasiScreen> {
     }
 
     return Dismissible(
-      key: Key('notification_$index'),
+      key: Key('notification_${notification.id}'),
       direction: DismissDirection.endToStart,
       background: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -188,16 +175,22 @@ class _NotifikasiScreenState extends State<NotifikasiScreen> {
         alignment: Alignment.centerRight,
         child: const Icon(Icons.delete, color: AppColors.white),
       ),
-      onDismissed: (direction) {
-        setState(() {
-          _notifications.removeAt(index);
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Notifikasi dihapus'),
-            duration: Duration(seconds: 2),
-          ),
-        );
+      confirmDismiss: (direction) async {
+        return await _showDeleteConfirmDialog();
+      },
+      onDismissed: (direction) async {
+        final success = await context
+            .read<NotificationProvider>()
+            .deleteNotification(notification.id);
+
+        if (success && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Notifikasi dihapus'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -248,7 +241,7 @@ class _NotifikasiScreenState extends State<NotifikasiScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            notification.time,
+                            notification.getTimeAgo(),
                             style: AppTextStyles.bodySmall.copyWith(
                               color: AppColors.textSecondary,
                             ),
@@ -300,78 +293,162 @@ class _NotifikasiScreenState extends State<NotifikasiScreen> {
     );
   }
 
-  void _markAsRead(NotificationItem notification) {
-    setState(() {
-      notification.isRead = true;
-    });
-  }
-
-  void _markAllAsRead() {
-    setState(() {
-      for (var notification in _notifications) {
-        notification.isRead = true;
-      }
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Semua notifikasi ditandai sebagai dibaca'),
-        duration: Duration(seconds: 2),
+  Widget _buildErrorState(String error) {
+    final isAuthError = error.contains('Sesi') || 
+                        error.contains('login') || 
+                        error.contains('authenticated');
+    
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            isAuthError ? Icons.lock_outline : Icons.error_outline,
+            size: 80,
+            color: AppColors.error,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            isAuthError ? 'Sesi Berakhir' : 'Terjadi Kesalahan',
+            style: AppTextStyles.heading3.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              error,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.body.copyWith(
+                color: AppColors.textHint,
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          if (isAuthError)
+            ElevatedButton.icon(
+              onPressed: () {
+                // Navigate to login
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/login',
+                  (route) => false,
+                );
+              },
+              icon: const Icon(Icons.login),
+              label: const Text('Login Kembali'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.white,
+              ),
+            )
+          else
+            ElevatedButton.icon(
+              onPressed: _loadNotifications,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Coba Lagi'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.white,
+              ),
+            ),
+        ],
       ),
     );
   }
 
-  void _clearAllNotifications() {
-    showDialog(
+  Future<bool?> _showDeleteConfirmDialog() {
+    return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Hapus Semua Notifikasi'),
-        content: const Text('Apakah Anda yakin ingin menghapus semua notifikasi?'),
+        title: const Text('Hapus Notifikasi'),
+        content: const Text('Apakah Anda yakin ingin menghapus notifikasi ini?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context, false),
             child: const Text('Batal'),
           ),
           TextButton(
-            onPressed: () {
-              setState(() {
-                _notifications.clear();
-              });
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Semua notifikasi telah dihapus'),
-                  duration: Duration(seconds: 2),
-                ),
-              );
-            },
+            onPressed: () => Navigator.pop(context, true),
             child: const Text('Hapus', style: TextStyle(color: AppColors.error)),
           ),
         ],
       ),
     );
   }
-}
 
-// Notification Model
-class NotificationItem {
-  final String title;
-  final String content;
-  final NotificationType type;
-  final String time;
-  bool isRead;
+  Future<void> _markAsRead(NotificationModel notification) async {
+    if (!notification.isRead) {
+      await context.read<NotificationProvider>().markAsRead(notification.id);
+    }
+  }
 
-  NotificationItem({
-    required this.title,
-    required this.content,
-    required this.type,
-    required this.time,
-    this.isRead = false,
-  });
-}
+  Future<void> _markAllAsRead() async {
+    final provider = context.read<NotificationProvider>();
 
-enum NotificationType {
-  success,
-  warning,
-  danger,
-  info,
+    final success = await provider.markAllAsRead();
+
+    if (mounted) {
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Semua notifikasi ditandai sebagai dibaca'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Gagal menandai notifikasi sebagai dibaca'),
+            backgroundColor: AppColors.error,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _clearAllNotifications() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Hapus Semua Notifikasi'),
+        content: const Text('Apakah Anda yakin ingin menghapus semua notifikasi?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Batal'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Hapus', style: TextStyle(color: AppColors.error)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && mounted) {
+      final provider = context.read<NotificationProvider>();
+      final success = await provider.deleteAllNotifications();
+
+      if (mounted) {
+        if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Semua notifikasi telah dihapus'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Gagal menghapus notifikasi'),
+              backgroundColor: AppColors.error,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    }
+  }
 }

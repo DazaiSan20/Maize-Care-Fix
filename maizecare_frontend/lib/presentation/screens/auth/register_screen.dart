@@ -48,28 +48,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     final authProvider = context.read<AuthProvider>();
 
+    // Get phone value or null if empty
+    final phone = _phoneController.text.trim();
+    final phoneValue = phone.isNotEmpty ? phone : null;
+
     final response = await authProvider.register(
       email: _emailController.text.trim(),
       password: _passwordController.text,
       name: _namaController.text.trim(),
-      phone: _phoneController.text.trim(),
+      phone: phoneValue,
     );
 
     if (!mounted) return;
 
     if (response.success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Registrasi berhasil! Silakan login'),
+        SnackBar(
+          content: Text(response.message ?? 'Registrasi berhasil! Silakan login'),
           backgroundColor: AppColors.success,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(response.message),
+          content: Text(response.message ?? 'Registrasi gagal'),
           backgroundColor: AppColors.error,
           duration: const Duration(seconds: 3),
         ),
@@ -140,6 +144,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       }
                       return null;
                     },
+                  ),
+                  const SizedBox(height: 16),
+
+                  CustomTextField(
+                    label: 'Nomor Telepon (Opsional)',
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    hintText: 'Masukkan nomor telepon',
+                    prefixIcon: const Icon(Icons.phone_outlined),
                   ),
                   const SizedBox(height: 16),
 

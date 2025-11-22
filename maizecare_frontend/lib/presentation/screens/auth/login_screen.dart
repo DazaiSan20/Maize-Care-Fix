@@ -43,10 +43,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (response.success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login berhasil!'),
+        SnackBar(
+          content: Text(response.message ?? 'Login berhasil!'),
           backgroundColor: AppColors.success,
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
         ),
       );
       
@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(response.message),
+          content: Text(response.message ?? 'Login gagal'),
           backgroundColor: AppColors.error,
           duration: const Duration(seconds: 3),
         ),
@@ -168,12 +168,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
               CustomButton(
                 text: 'Login dengan Google',
-                onPressed: () {},
+                onPressed: () {
+                  // TODO: Implement Google Sign In
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Google Sign In akan segera tersedia'),
+                    ),
+                  );
+                },
                 isOutlined: true,
                 iconWidget: Image.network(
                   'https://developers.google.com/identity/images/g-logo.png',
                   width: 20,
                   height: 20,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.g_mobiledata, size: 20);
+                  },
                 ),
               ),
               const SizedBox(height: 24),

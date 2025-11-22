@@ -17,16 +17,21 @@ class SoilSensorRepository {
           success: true,
           message: response.message,
           data: soilSensor,
+          statusCode: response.statusCode,
         );
       }
       return ApiResponse(
         success: false,
-        message: response.message.isNotEmpty ? response.message : 'Failed to fetch sensor data',
+        message: (response.message != null && response.message!.isNotEmpty) 
+            ? response.message! 
+            : 'Failed to fetch sensor data',
+        statusCode: response.statusCode,
       );
     } catch (e) {
       return ApiResponse(
         success: false,
         message: 'Error: ${e.toString()}',
+        statusCode: 500,
       );
     }
   }
@@ -45,18 +50,25 @@ class SoilSensorRepository {
             .toList();
         return ApiResponse(
           success: true,
-          message: response.message.isNotEmpty ? response.message : 'Data fetched successfully',
+          message: (response.message != null && response.message!.isNotEmpty) 
+              ? response.message! 
+              : 'Data fetched successfully',
           data: sensors,
+          statusCode: response.statusCode,
         );
       }
       return ApiResponse(
         success: false,
-        message: response.message.isNotEmpty ? response.message : 'Failed to fetch sensor data',
+        message: (response.message != null && response.message!.isNotEmpty) 
+            ? response.message! 
+            : 'Failed to fetch sensor data',
+        statusCode: response.statusCode,
       );
     } catch (e) {
       return ApiResponse(
         success: false,
         message: 'Error: ${e.toString()}',
+        statusCode: 500,
       );
     }
   }
@@ -75,18 +87,25 @@ class SoilSensorRepository {
             .toList();
         return ApiResponse(
           success: true,
-          message: response.message.isNotEmpty ? response.message : 'Data fetched successfully',
+          message: (response.message != null && response.message!.isNotEmpty) 
+              ? response.message! 
+              : 'Data fetched successfully',
           data: sensors,
+          statusCode: response.statusCode,
         );
       }
       return ApiResponse(
         success: false,
-        message: response.message.isNotEmpty ? response.message : 'Failed to fetch sensor data',
+        message: (response.message != null && response.message!.isNotEmpty) 
+            ? response.message! 
+            : 'Failed to fetch sensor data',
+        statusCode: response.statusCode,
       );
     } catch (e) {
       return ApiResponse(
         success: false,
         message: 'Error: ${e.toString()}',
+        statusCode: 500,
       );
     }
   }
@@ -103,6 +122,7 @@ class SoilSensorRepository {
         return ApiResponse(
           success: false,
           message: 'Humidity must be between 0 and 100',
+          statusCode: 400,
         );
       }
 
@@ -118,18 +138,25 @@ class SoilSensorRepository {
         final soilSensor = SoilSensor.fromJson(response.data as Map<String, dynamic>);
         return ApiResponse(
           success: true,
-          message: response.message.isNotEmpty ? response.message : 'Data recorded successfully',
+          message: (response.message != null && response.message!.isNotEmpty) 
+              ? response.message! 
+              : 'Data recorded successfully',
           data: soilSensor,
+          statusCode: response.statusCode,
         );
       }
       return ApiResponse(
         success: false,
-        message: response.message.isNotEmpty ? response.message : 'Failed to record sensor data',
+        message: (response.message != null && response.message!.isNotEmpty) 
+            ? response.message! 
+            : 'Failed to record sensor data',
+        statusCode: response.statusCode,
       );
     } catch (e) {
       return ApiResponse(
         success: false,
         message: 'Error: ${e.toString()}',
+        statusCode: 500,
       );
     }
   }
@@ -151,18 +178,25 @@ class SoilSensorRepository {
         final soilSensor = SoilSensor.fromJson(response.data as Map<String, dynamic>);
         return ApiResponse(
           success: true,
-          message: response.message.isNotEmpty ? response.message : 'Data updated successfully',
+          message: (response.message != null && response.message!.isNotEmpty) 
+              ? response.message! 
+              : 'Data updated successfully',
           data: soilSensor,
+          statusCode: response.statusCode,
         );
       }
       return ApiResponse(
         success: false,
-        message: response.message.isNotEmpty ? response.message : 'Failed to update sensor data',
+        message: (response.message != null && response.message!.isNotEmpty) 
+            ? response.message! 
+            : 'Failed to update sensor data',
+        statusCode: response.statusCode,
       );
     } catch (e) {
       return ApiResponse(
         success: false,
         message: 'Error: ${e.toString()}',
+        statusCode: 500,
       );
     }
   }
@@ -173,17 +207,24 @@ class SoilSensorRepository {
       if (response.success) {
         return ApiResponse(
           success: true,
-          message: response.message.isNotEmpty ? response.message : 'Data deleted successfully',
+          message: (response.message != null && response.message!.isNotEmpty) 
+              ? response.message! 
+              : 'Data deleted successfully',
+          statusCode: response.statusCode,
         );
       }
       return ApiResponse(
         success: false,
-        message: response.message.isNotEmpty ? response.message : 'Failed to delete sensor data',
+        message: (response.message != null && response.message!.isNotEmpty) 
+            ? response.message! 
+            : 'Failed to delete sensor data',
+        statusCode: response.statusCode,
       );
     } catch (e) {
       return ApiResponse(
         success: false,
         message: 'Error: ${e.toString()}',
+        statusCode: 500,
       );
     }
   }
